@@ -1,0 +1,60 @@
+{
+    "index_name": "MHGI",
+    "index_full_name": "Maleyzal Horizon Global Index",
+    "base_value": 1000,
+    "base_date": "2025-01-02",
+    "currency": "IDR",
+    "description": "Custom equity index tracking selected IHSG constituents using free-float market capitalization weighting methodology.",
+    "constituents": {
+        "BBCA.JK": {
+            "name": "Bank Central Asia",
+            "sector": "Financials",
+            "free_float_factor": 0.40
+        },
+        "BBRI.JK": {
+            "name": "Bank Rakyat Indonesia",
+            "sector": "Financials",
+            "free_float_factor": 0.40
+        },
+        "BMRI.JK": {
+            "name": "Bank Mandiri",
+            "sector": "Financials",
+            "free_float_factor": 0.40
+        },
+        "TLKM.JK": {
+            "name": "Telkom Indonesia",
+            "sector": "Communication Services",
+            "free_float_factor": 0.40
+        },
+        "ASII.JK": {
+            "name": "Astra International",
+            "sector": "Consumer Discretionary",
+            "free_float_factor": 0.40
+        },
+        "UNVR.JK": {
+            "name": "Unilever Indonesia",
+            "sector": "Consumer Staples",
+            "free_float_factor": 0.40
+        },
+        "GOTO.JK": {
+            "name": "GoTo Gojek Tokopedia",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "BRIS.JK": {
+            "name": "Bank Syariah Indonesia",
+            "sector": "Financials",
+            "free_float_factor": 0.40
+        },
+        "AMMN.JK": {
+            "name": "Amman Mineral Internasional",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "MDKA.JK": {
+            "name": "Merdeka Copper Gold",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        }
+    }
+}

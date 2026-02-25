@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# MHGI Project
+node_modules/
+frontend/dist/
+frontend/.vite/
+backend/__pycache__/
+backend/index_history.json
+MHGI-venv/
+*.pyc
