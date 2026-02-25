@@ -212,5 +212,6 @@ frontend/dist/
 frontend/.vite/
 backend/__pycache__/
 backend/index_history.json
+backend/.env
 MHGI-venv/
 *.pyc

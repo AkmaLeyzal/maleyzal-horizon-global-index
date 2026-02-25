@@ -2,6 +2,7 @@
 MHGI — Maleyzal Horizon Global Index API
 FastAPI application with REST endpoints and WebSocket.
 Index calculated daily at 17:00 WIB (after IHSG close).
+Persistence: MongoDB Atlas (with JSON fallback).
 """
 import asyncio
 import logging
@@ -12,6 +13,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from database import mongodb
+from data_fetcher import data_fetcher
 from index_engine import index_engine
 from websocket_manager import ws_manager
 from scheduler import index_scheduler
@@ -34,16 +37,27 @@ async def lifespan(app: FastAPI):
     logger.info("  Starting up...")
     logger.info("=" * 60)
 
-    # Initialize index engine (fetch stock info, calculate divisor)
+    # Step 1: Connect to MongoDB Atlas
+    db_connected = await mongodb.connect()
+
+    # Step 2: Inject database into engine and data_fetcher
+    if db_connected:
+        index_engine.set_db(mongodb)
+        data_fetcher.set_db(mongodb)
+        logger.info("  MongoDB Atlas connected ✅")
+    else:
+        logger.warning("  Running without MongoDB — using JSON fallback ⚠️")
+
+    # Step 3: Initialize index engine (fetch stock info, calculate divisor)
     await index_engine.initialize()
 
-    # Build historical index data from base_date
+    # Step 4: Build historical index data (incremental if MongoDB)
     await index_engine.build_historical_index()
 
-    # Calculate latest EOD value
+    # Step 5: Calculate latest EOD value
     await index_engine.calculate_eod_index()
 
-    # Start daily scheduler (triggers at 17:00 WIB on weekdays)
+    # Step 6: Start daily scheduler (triggers at 17:00 WIB on weekdays)
     await index_scheduler.start(index_engine, ws_manager)
 
     logger.info("MHGI is live!")
@@ -51,6 +65,7 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     await index_scheduler.stop()
+    await mongodb.close()
     logger.info("MHGI shut down.")
 
 
@@ -142,6 +157,7 @@ async def health():
         "timestamp": datetime.now().isoformat(),
         "clients_connected": ws_manager.client_count,
         "index_ready": index_engine.last_snapshot is not None,
+        "database": "MongoDB Atlas ✅" if mongodb.is_connected else "JSON fallback ⚠️",
         "calculation_frequency": "Daily at 17:00 WIB (Mon-Fri)",
         "last_calculated": index_scheduler.last_calc_date or "N/A",
         "next_calculation": index_scheduler.get_next_calculation(),
@@ -164,15 +180,13 @@ async def websocket_endpoint(websocket: WebSocket):
             "type": "initial",
             "index": snapshot.index.model_dump(),
             "constituents": [c.model_dump() for c in snapshot.constituents],
-            "history": index_engine.index_history[-100:],  # Last 100 points
+            "history": index_engine.index_history[-100:],
         }
         await websocket.send_text(json.dumps(initial_data, default=str))
 
     try:
         while True:
-            # Keep connection alive, handle incoming messages
             data = await websocket.receive_text()
-            # Client can send "ping" to keep alive
             if data == "ping":
                 await websocket.send_text('{"type": "pong"}')
     except WebSocketDisconnect:
