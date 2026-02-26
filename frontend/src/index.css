@@ -876,28 +876,64 @@ body::before {
   align-items: center;
 }
 
-.weight-legend {
-  width: 100%;
-  margin-top: 16px;
+.weight-chart-container {
+  padding: 10px 16px 0;
 }
 
-.legend-item {
+/* ─── Scrollable Weight Legend ─── */
+.weight-legend-scroll {
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 16px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(6, 182, 212, 0.2) transparent;
+  border-top: 1px solid var(--border-dim);
+}
+
+.weight-legend-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.weight-legend-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.weight-legend-scroll::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.2);
+  border-radius: 3px;
+}
+
+.weight-legend-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.35);
+}
+
+.weight-legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+  padding-top: 12px;
+}
+
+.weight-legend-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  transition: opacity 0.2s;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
 }
 
-.legend-item:hover {
-  opacity: 0.8;
+.weight-legend-item:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.legend-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.weight-legend-item.others {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  padding-top: 10px;
+  border-radius: 0;
 }
 
 .legend-dot {
@@ -907,17 +943,22 @@ body::before {
   flex-shrink: 0;
 }
 
-.legend-label {
-  font-size: 12px;
+.legend-name {
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .legend-value {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 /* ═══════════════ FOOTER ═══════════════ */
