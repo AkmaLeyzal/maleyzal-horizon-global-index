@@ -2,38 +2,83 @@
     "index_name": "MHGI",
     "index_full_name": "Maleyzal Horizon Global Index",
     "base_value": 1000,
-    "base_date": "2025-01-02",
+    "base_date": "2020-01-02",
     "currency": "IDR",
     "description": "Custom equity index tracking selected IHSG constituents using free-float market capitalization weighting methodology.",
     "constituents": {
-        "BBCA.JK": {
-            "name": "Bank Central Asia",
-            "sector": "Financials",
+        "BREN.JK": {
+            "name": "Barito Renewables Energy",
+            "sector": "Utilities",
             "free_float_factor": 0.40
         },
-        "BBRI.JK": {
-            "name": "Bank Rakyat Indonesia",
-            "sector": "Financials",
+        "DSSA.JK": {
+            "name": "Dian Swastatika Sentosa",
+            "sector": "Energy",
             "free_float_factor": 0.40
         },
-        "BMRI.JK": {
-            "name": "Bank Mandiri",
-            "sector": "Financials",
+        "TPIA.JK": {
+            "name": "Chandra Asri Pacific",
+            "sector": "Materials",
             "free_float_factor": 0.40
         },
-        "TLKM.JK": {
-            "name": "Telkom Indonesia",
-            "sector": "Communication Services",
+        "DCII.JK": {
+            "name": "DCI Indonesia",
+            "sector": "Technology",
             "free_float_factor": 0.40
         },
-        "ASII.JK": {
-            "name": "Astra International",
-            "sector": "Consumer Discretionary",
+        "CUAN.JK": {
+            "name": "Petrindo Jaya Kreasi",
+            "sector": "Energy",
             "free_float_factor": 0.40
         },
-        "UNVR.JK": {
-            "name": "Unilever Indonesia",
-            "sector": "Consumer Staples",
+        "BRPT.JK": {
+            "name": "Barito Pacific",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "PANI.JK": {
+            "name": "Pantai Indah Kapuk Dua",
+            "sector": "Real Estate",
+            "free_float_factor": 0.40
+        },
+        "BRMS.JK": {
+            "name": "Bumi Resources Minerals",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "EMAS.JK": {
+            "name": "Emas Antam Indonesia",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "CDIA.JK": {
+            "name": "CDI Astra",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "IMPC.JK": {
+            "name": "Impack Pratama Industri",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "ANTM.JK": {
+            "name": "Aneka Tambang",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "BUMI.JK": {
+            "name": "Bumi Resources",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "NCKL.JK": {
+            "name": "Trimegah Bangun Persada",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "MDKA.JK": {
+            "name": "Merdeka Copper Gold",
+            "sector": "Materials",
             "free_float_factor": 0.40
         },
         "GOTO.JK": {
@@ -41,19 +86,239 @@
             "sector": "Technology",
             "free_float_factor": 0.40
         },
-        "BRIS.JK": {
-            "name": "Bank Syariah Indonesia",
+        "AADI.JK": {
+            "name": "Astra Agro Tbk",
+            "sector": "Agriculture",
+            "free_float_factor": 0.40
+        },
+        "ADMR.JK": {
+            "name": "Adaro Minerals Indonesia",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "ADRO.JK": {
+            "name": "Adaro Energy Indonesia",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "PTRO.JK": {
+            "name": "Petrosea",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "PGAS.JK": {
+            "name": "Perusahaan Gas Negara",
+            "sector": "Utilities",
+            "free_float_factor": 0.40
+        },
+        "EMTK.JK": {
+            "name": "Elang Mahkota Teknologi",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "PGEO.JK": {
+            "name": "Pertamina Geothermal Energy",
+            "sector": "Utilities",
+            "free_float_factor": 0.40
+        },
+        "ARCI.JK": {
+            "name": "Archi Indonesia",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "BUVA.JK": {
+            "name": "Bukit Uluwatu Villa",
+            "sector": "Consumer Discretionary",
+            "free_float_factor": 0.40
+        },
+        "SUPA.JK": {
+            "name": "Supa Surya Niaga",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "CBDK.JK": {
+            "name": "Cahaya Benteng Dunia Kimia",
+            "sector": "Materials",
+            "free_float_factor": 0.40
+        },
+        "TOWR.JK": {
+            "name": "Sarana Menara Nusantara",
+            "sector": "Communication Services",
+            "free_float_factor": 0.40
+        },
+        "TAPG.JK": {
+            "name": "Triputra Agro Persada",
+            "sector": "Agriculture",
+            "free_float_factor": 0.40
+        },
+        "BNBR.JK": {
+            "name": "Bakrie & Brothers",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "ITMG.JK": {
+            "name": "Indo Tambangraya Megah",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "COIN.JK": {
+            "name": "Coin Industri",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "BKSL.JK": {
+            "name": "Sentul City",
+            "sector": "Real Estate",
+            "free_float_factor": 0.40
+        },
+        "ARTO.JK": {
+            "name": "Bank Jago",
             "sector": "Financials",
             "free_float_factor": 0.40
         },
-        "AMMN.JK": {
-            "name": "Amman Mineral Internasional",
+        "MAPI.JK": {
+            "name": "Mitra Adiperkasa",
+            "sector": "Consumer Discretionary",
+            "free_float_factor": 0.40
+        },
+        "DEWA.JK": {
+            "name": "Darma Henwa",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "RLCO.JK": {
+            "name": "Realco Medika Internasional",
+            "sector": "Healthcare",
+            "free_float_factor": 0.40
+        },
+        "SCMA.JK": {
+            "name": "Surya Citra Media",
+            "sector": "Communication Services",
+            "free_float_factor": 0.40
+        },
+        "RATU.JK": {
+            "name": "Maha Properti Indonesia",
+            "sector": "Real Estate",
+            "free_float_factor": 0.40
+        },
+        "RAJA.JK": {
+            "name": "Rukun Raharja",
+            "sector": "Utilities",
+            "free_float_factor": 0.40
+        },
+        "BSDE.JK": {
+            "name": "Bumi Serpong Damai",
+            "sector": "Real Estate",
+            "free_float_factor": 0.40
+        },
+        "SSMS.JK": {
+            "name": "Sawit Sumbermas Sarana",
+            "sector": "Agriculture",
+            "free_float_factor": 0.40
+        },
+        "HRTA.JK": {
+            "name": "Hartadinata Abadi",
+            "sector": "Consumer Discretionary",
+            "free_float_factor": 0.40
+        },
+        "PSAB.JK": {
+            "name": "J Resources Asia Pasifik",
             "sector": "Materials",
             "free_float_factor": 0.40
         },
-        "MDKA.JK": {
-            "name": "Merdeka Copper Gold",
-            "sector": "Materials",
+        "DSNG.JK": {
+            "name": "Dharma Satya Nusantara",
+            "sector": "Agriculture",
+            "free_float_factor": 0.40
+        },
+        "WIFI.JK": {
+            "name": "Solusi Sinergi Digital",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "INET.JK": {
+            "name": "Indosat Mega Media",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "INDS.JK": {
+            "name": "Indospring",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "BULL.JK": {
+            "name": "Buana Lintas Lautan",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "DAAZ.JK": {
+            "name": "Daaz Bara Lestari",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "SINI.JK": {
+            "name": "Singaraja Putra",
+            "sector": "Consumer Staples",
+            "free_float_factor": 0.40
+        },
+        "SSIA.JK": {
+            "name": "Surya Semesta Internusa",
+            "sector": "Real Estate",
+            "free_float_factor": 0.40
+        },
+        "TOBA.JK": {
+            "name": "TBS Energi Utama",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "DATA.JK": {
+            "name": "Remala Abadi",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "BBYB.JK": {
+            "name": "Bank Neo Commerce",
+            "sector": "Financials",
+            "free_float_factor": 0.40
+        },
+        "TRIN.JK": {
+            "name": "Petrindo Jaya Kreasi",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "PYFA.JK": {
+            "name": "Pyridam Farma",
+            "sector": "Healthcare",
+            "free_float_factor": 0.40
+        },
+        "FORE.JK": {
+            "name": "Fore Kopi Indonesia",
+            "sector": "Consumer Discretionary",
+            "free_float_factor": 0.40
+        },
+        "WIIM.JK": {
+            "name": "Wismilak Inti Makmur",
+            "sector": "Consumer Staples",
+            "free_float_factor": 0.40
+        },
+        "CBRE.JK": {
+            "name": "Cakra Buana Resources Energy",
+            "sector": "Energy",
+            "free_float_factor": 0.40
+        },
+        "ISSP.JK": {
+            "name": "Steel Pipe Industry of Indonesia",
+            "sector": "Industrials",
+            "free_float_factor": 0.40
+        },
+        "BLOG.JK": {
+            "name": "Brainstorm Digital",
+            "sector": "Technology",
+            "free_float_factor": 0.40
+        },
+        "KBLV.JK": {
+            "name": "First Media",
+            "sector": "Communication Services",
             "free_float_factor": 0.40
         }
     }

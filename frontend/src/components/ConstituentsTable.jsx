@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { List } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { List, Search, X } from 'lucide-react';
 
 export default function ConstituentsTable({ constituents }) {
+    const [searchQuery, setSearchQuery] = useState('');
+
     if (!constituents || constituents.length === 0) return null;
 
     const maxWeight = Math.max(...constituents.map(c => c.weight || 0));
@@ -20,7 +22,19 @@ export default function ConstituentsTable({ constituents }) {
         return num.toLocaleString('id-ID');
     };
 
-    const sorted = [...constituents].sort((a, b) => (b.weight || 0) - (a.weight || 0));
+    // Sort by weight (descending) and then filter by search
+    const filtered = useMemo(() => {
+        const sorted = [...constituents].sort((a, b) => (b.weight || 0) - (a.weight || 0));
+        if (!searchQuery.trim()) return sorted;
+
+        const q = searchQuery.toLowerCase().trim();
+        return sorted.filter(s => {
+            const ticker = (s.ticker || '').replace('.JK', '').toLowerCase();
+            const name = (s.name || '').toLowerCase();
+            const sector = (s.sector || '').toLowerCase();
+            return ticker.includes(q) || name.includes(q) || sector.includes(q);
+        });
+    }, [constituents, searchQuery]);
 
     const colors = [
         'linear-gradient(135deg, #10b981, #059669)',
@@ -37,6 +51,7 @@ export default function ConstituentsTable({ constituents }) {
 
     return (
         <div className="table-panel">
+            {/* Header */}
             <div className="table-header">
                 <div className="table-title">
                     <List size={18} />
@@ -53,7 +68,30 @@ export default function ConstituentsTable({ constituents }) {
                 }}>{constituents.length} stocks</span>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
+            {/* Search Bar */}
+            <div className="constituent-search">
+                <Search size={15} className="search-icon" />
+                <input
+                    type="text"
+                    placeholder="Search by name, ticker, or sector..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input"
+                />
+                {searchQuery && (
+                    <button className="search-clear" onClick={() => setSearchQuery('')}>
+                        <X size={14} />
+                    </button>
+                )}
+                {searchQuery && (
+                    <span className="search-count">
+                        {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+                    </span>
+                )}
+            </div>
+
+            {/* Scrollable Table */}
+            <div className="constituent-scroll-area">
                 <table className="constituent-table">
                     <thead>
                         <tr>
@@ -66,47 +104,60 @@ export default function ConstituentsTable({ constituents }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {sorted.map((stock, idx) => {
-                            const ticker = stock.ticker?.replace('.JK', '') || '';
-                            const isUp = (stock.change_percent || 0) >= 0;
+                        {filtered.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" style={{
+                                    textAlign: 'center',
+                                    padding: '40px 20px',
+                                    color: 'var(--text-muted)',
+                                    fontSize: '14px',
+                                }}>
+                                    No stocks match "{searchQuery}"
+                                </td>
+                            </tr>
+                        ) : (
+                            filtered.map((stock, idx) => {
+                                const ticker = stock.ticker?.replace('.JK', '') || '';
+                                const isUp = (stock.change_percent || 0) >= 0;
 
-                            return (
-                                <tr key={stock.ticker}>
-                                    <td style={{ paddingLeft: '20px' }}>
-                                        <div className="ticker-cell">
-                                            <TickerLogo ticker={ticker} fallbackColor={colors[idx % colors.length]} />
-                                            <div className="ticker-info">
-                                                <div className="ticker-name">{stock.name}</div>
-                                                <div className="ticker-code">{stock.ticker}</div>
+                                return (
+                                    <tr key={stock.ticker}>
+                                        <td style={{ paddingLeft: '20px' }}>
+                                            <div className="ticker-cell">
+                                                <TickerLogo ticker={ticker} fallbackColor={colors[idx % colors.length]} />
+                                                <div className="ticker-info">
+                                                    <div className="ticker-name">{stock.name}</div>
+                                                    <div className="ticker-code">{ticker}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td className="sector-cell">{stock.sector}</td>
-                                    <td style={{ textAlign: 'right' }}>
-                                        <span className="price-cell">Rp {formatPrice(stock.price)}</span>
-                                    </td>
-                                    <td style={{ textAlign: 'center' }}>
-                                        <span className={`change-badge ${isUp ? 'positive' : 'negative'}`}>
-                                            {isUp ? '+' : ''}{stock.change_percent?.toFixed(2)}%
-                                        </span>
-                                    </td>
-                                    <td style={{ textAlign: 'right' }}>
-                                        <span className="mcap-cell">{formatMCap(stock.free_float_market_cap)}</span>
-                                    </td>
-                                    <td style={{ textAlign: 'right', paddingRight: '20px' }}>
-                                        <div className="weight-cell">
-                                            <div className="weight-bar-bg">
-                                                <div
-                                                    className="weight-bar-fill"
-                                                    style={{ width: `${maxWeight ? (stock.weight / maxWeight) * 100 : 0}%` }}
-                                                />
+                                        </td>
+                                        <td className="sector-cell">{stock.sector}</td>
+                                        <td style={{ textAlign: 'right' }}>
+                                            <span className="price-cell">Rp {formatPrice(stock.price)}</span>
+                                        </td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <span className={`change-badge ${isUp ? 'positive' : 'negative'}`}>
+                                                {isUp ? '+' : ''}{stock.change_percent?.toFixed(2)}%
+                                            </span>
+                                        </td>
+                                        <td style={{ textAlign: 'right' }}>
+                                            <span className="mcap-cell">{formatMCap(stock.free_float_market_cap)}</span>
+                                        </td>
+                                        <td style={{ textAlign: 'right', paddingRight: '20px' }}>
+                                            <div className="weight-cell">
+                                                <div className="weight-bar-bg">
+                                                    <div
+                                                        className="weight-bar-fill"
+                                                        style={{ width: `${maxWeight ? (stock.weight / maxWeight) * 100 : 0}%` }}
+                                                    />
+                                                </div>
+                                                <span className="weight-value">{stock.weight?.toFixed(1)}%</span>
                                             </div>
-                                            <span className="weight-value">{stock.weight?.toFixed(1)}%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -117,12 +168,6 @@ export default function ConstituentsTable({ constituents }) {
 /**
  * TickerLogo — shows the company logo from /logos/{TICKER}.png
  * Falls back to a colored initial avatar if the image doesn't exist.
- * 
- * To add a real logo:
- *   1. Save the image to: frontend/public/logos/{TICKER}.png
- *      Example: frontend/public/logos/BBCA.png
- *   2. Recommended: 64x64 or 128x128 PNG with transparent background
- *   3. The component will automatically detect and display it
  */
 function TickerLogo({ ticker, fallbackColor }) {
     const [imgError, setImgError] = useState(false);

@@ -241,7 +241,7 @@ class DataFetcher:
                 interval="1d", progress=False, threads=True,
             )
             if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(-1)
+                data.columns = data.columns.get_level_values(0)
             data = data.dropna(subset=["Close"])
             data.index = pd.to_datetime(data.index)
             return data
@@ -257,7 +257,7 @@ class DataFetcher:
                 progress=False, threads=True,
             )
             if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(-1)
+                data.columns = data.columns.get_level_values(0)
             data = data.dropna(subset=["Close"])
             data.index = pd.to_datetime(data.index)
             return data
@@ -280,18 +280,34 @@ class DataFetcher:
         return docs
 
     def _price_docs_to_df(self, docs: list[dict]) -> pd.DataFrame:
-        """Convert MongoDB price docs back to a DataFrame."""
+        """Convert MongoDB price docs back to a DataFrame.
+        Handles both timeseries format (capitalized) and lowercase format.
+        """
         df = pd.DataFrame(docs)
-        df["date"] = pd.to_datetime(df["date"])
-        df = df.set_index("date")
-        df = df.rename(columns={
-            "open": "Open", "high": "High", "low": "Low",
-            "close": "Close", "volume": "Volume",
-        })
+
+        # The timeseries collection uses 'Date' (datetime) as the timeField
+        # and capitalized column names (Open, High, Low, Close, Volume)
+        if "Date" in df.columns:
+            df["Date"] = pd.to_datetime(df["Date"])
+            df = df.set_index("Date")
+        elif "date" in df.columns:
+            df["date"] = pd.to_datetime(df["date"])
+            df = df.set_index("date")
+
+        # Rename lowercase to uppercase if needed
+        rename_map = {}
+        for col_lower, col_upper in [("open", "Open"), ("high", "High"), ("low", "Low"), ("close", "Close"), ("volume", "Volume")]:
+            if col_lower in df.columns and col_upper not in df.columns:
+                rename_map[col_lower] = col_upper
+        if rename_map:
+            df = df.rename(columns=rename_map)
+
         # Remove non-OHLCV columns
-        for col in ["ticker", "_id", "updated_at"]:
-            if col in df.columns:
-                df = df.drop(columns=[col])
+        keep_cols = {"Open", "High", "Low", "Close", "Volume"}
+        drop_cols = [c for c in df.columns if c not in keep_cols]
+        if drop_cols:
+            df = df.drop(columns=drop_cols)
+
         return df
 
     def fetch_historical(
