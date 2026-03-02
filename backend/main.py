@@ -40,21 +40,42 @@ async def _background_init():
         logger.info("  [Background] Starting heavy initialization...")
 
         # Step 3: Initialize index engine (fetch stock info, calculate divisor)
-        await index_engine.initialize()
+        try:
+            await index_engine.initialize()
+            logger.info("  [Background] ✅ Step 3: Engine initialized")
+        except Exception as e:
+            logger.error(f"  [Background] ❌ Step 3 failed: {e}")
+            _init_complete = True
+            return
 
         # Step 4: Build historical index data (incremental if MongoDB)
-        await index_engine.build_historical_index()
+        try:
+            await index_engine.build_historical_index()
+            logger.info("  [Background] ✅ Step 4: Historical index built")
+        except Exception as e:
+            logger.error(f"  [Background] ❌ Step 4 failed: {e}")
 
         # Step 5: Calculate latest EOD value
-        await index_engine.calculate_eod_index()
+        try:
+            await index_engine.calculate_eod_index()
+            logger.info("  [Background] ✅ Step 5: EOD calculated")
+        except Exception as e:
+            logger.error(f"  [Background] ❌ Step 5 failed: {e}")
 
-        # Step 6: Start daily scheduler (triggers at 17:00 WIB on weekdays)
-        await index_scheduler.start(index_engine, ws_manager)
+        # Step 6: Start daily scheduler
+        try:
+            await index_scheduler.start(index_engine, ws_manager)
+            logger.info("  [Background] ✅ Step 6: Scheduler started")
+        except Exception as e:
+            logger.error(f"  [Background] ❌ Step 6 failed: {e}")
 
         _init_complete = True
-        logger.info("  [Background] ✅ MHGI is fully initialized and live!")
+        has_snapshot = index_engine.last_snapshot is not None
+        history_count = len(index_engine.index_history)
+        logger.info(f"  [Background] Init done — snapshot: {has_snapshot}, history: {history_count}")
     except Exception as e:
         logger.error(f"  [Background] ❌ Initialization failed: {e}")
+        _init_complete = True
 
 
 @asynccontextmanager
@@ -119,6 +140,29 @@ async def get_health():
         "timestamp": datetime.now().isoformat(),
         "database": "MongoDB Atlas ✅" if mongodb.is_connected else "JSON fallback ⚠️",
         "index_ready": index_engine.last_snapshot is not None,
+        "history_count": len(index_engine.index_history),
+        "divisor": index_engine.divisor,
+        "stocks_info_count": len(getattr(index_engine, '_stocks_info', {})),
+    }
+
+
+@app.get("/api/debug")
+async def get_debug():
+    """Debug endpoint — shows engine internals for troubleshooting."""
+    info = getattr(index_engine, '_stocks_info', {})
+    missing_shares = [
+        t for t in index_engine.tickers
+        if info.get(t, {}).get("shares_outstanding", 0) == 0
+    ]
+    return {
+        "tickers_total": len(index_engine.tickers),
+        "stocks_info_loaded": len(info),
+        "missing_shares": missing_shares,
+        "missing_shares_count": len(missing_shares),
+        "divisor": index_engine.divisor,
+        "history_count": len(index_engine.index_history),
+        "has_snapshot": index_engine.last_snapshot is not None,
+        "last_history_date": index_engine.index_history[-1]["date"] if index_engine.index_history else None,
     }
 
 
