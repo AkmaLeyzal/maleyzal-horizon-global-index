@@ -6,6 +6,7 @@ Persistence: MongoDB Atlas (with JSON fallback).
 """
 import asyncio
 import logging
+import os
 from contextlib import asynccontextmanager
 from datetime import datetime
 
@@ -28,16 +29,45 @@ logging.basicConfig(
 )
 logger = logging.getLogger("mhgi.main")
 
+# Track initialization state
+_init_complete = False
+
+
+async def _background_init():
+    """Heavy initialization that runs AFTER server is already accepting connections."""
+    global _init_complete
+    try:
+        logger.info("  [Background] Starting heavy initialization...")
+
+        # Step 3: Initialize index engine (fetch stock info, calculate divisor)
+        await index_engine.initialize()
+
+        # Step 4: Build historical index data (incremental if MongoDB)
+        await index_engine.build_historical_index()
+
+        # Step 5: Calculate latest EOD value
+        await index_engine.calculate_eod_index()
+
+        # Step 6: Start daily scheduler (triggers at 17:00 WIB on weekdays)
+        await index_scheduler.start(index_engine, ws_manager)
+
+        _init_complete = True
+        logger.info("  [Background] ✅ MHGI is fully initialized and live!")
+    except Exception as e:
+        logger.error(f"  [Background] ❌ Initialization failed: {e}")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup and shutdown logic."""
+    """Startup and shutdown logic.
+    Only fast operations happen here — heavy init is deferred to background.
+    """
     logger.info("=" * 60)
     logger.info("  MHGI — Maleyzal Horizon Global Index")
     logger.info("  Starting up...")
     logger.info("=" * 60)
 
-    # Step 1: Connect to MongoDB Atlas
+    # Step 1: Connect to MongoDB Atlas (fast, ~2-5 seconds)
     db_connected = await mongodb.connect()
 
     # Step 2: Inject database into engine and data_fetcher
@@ -48,19 +78,10 @@ async def lifespan(app: FastAPI):
     else:
         logger.warning("  Running without MongoDB — using JSON fallback ⚠️")
 
-    # Step 3: Initialize index engine (fetch stock info, calculate divisor)
-    await index_engine.initialize()
+    # Server will bind to port NOW — heavy init happens in background
+    logger.info("  Server ready — starting background initialization...")
+    asyncio.create_task(_background_init())
 
-    # Step 4: Build historical index data (incremental if MongoDB)
-    await index_engine.build_historical_index()
-
-    # Step 5: Calculate latest EOD value
-    await index_engine.calculate_eod_index()
-
-    # Step 6: Start daily scheduler (triggers at 17:00 WIB on weekdays)
-    await index_scheduler.start(index_engine, ws_manager)
-
-    logger.info("MHGI is live!")
     yield
 
     # Shutdown
@@ -87,6 +108,18 @@ app.add_middleware(
 
 
 # ───────── REST API ENDPOINTS ─────────
+
+
+@app.get("/api/health")
+async def get_health():
+    """Health check — returns quickly even during initialization."""
+    return {
+        "status": "healthy",
+        "initialized": _init_complete,
+        "timestamp": datetime.now().isoformat(),
+        "database": "MongoDB Atlas ✅" if mongodb.is_connected else "JSON fallback ⚠️",
+        "index_ready": index_engine.last_snapshot is not None,
+    }
 
 
 @app.get("/api/index")
@@ -198,4 +231,5 @@ async def websocket_endpoint(websocket: WebSocket):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

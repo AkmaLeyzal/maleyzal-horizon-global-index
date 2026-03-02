@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const WS_URL = 'ws://localhost:8000/ws/index';
+const WS_URL = (import.meta.env.VITE_WS_URL || 'ws://localhost:8000') + '/ws/index';
 const RECONNECT_DELAY = 3000;
 const MAX_RECONNECT = 10;
 
