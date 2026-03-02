@@ -266,19 +266,20 @@ class MongoDBManager:
         except Exception as e:
             logger.error(f"Error saving stock info for {ticker}: {e}")
 
-    async def load_stock_info(self, ticker: str) -> Optional[dict]:
-        """Load stock info (returns None if stale >24h)."""
+    async def load_stock_info(self, ticker: str, allow_stale: bool = False) -> Optional[dict]:
+        """Load stock info. Returns cached data even if stale when allow_stale=True."""
         if not self.is_connected:
             return None
         try:
             doc = await self.db.stock_info.find_one({"ticker": ticker}, {"_id": 0})
             if doc:
-                updated = doc.get("updated_at")
-                if updated:
-                    updated_dt = datetime.fromisoformat(updated)
-                    age_hours = (datetime.now() - updated_dt).total_seconds() / 3600
-                    if age_hours > 24:
-                        return None
+                if not allow_stale:
+                    updated = doc.get("updated_at")
+                    if updated:
+                        updated_dt = datetime.fromisoformat(updated)
+                        age_hours = (datetime.now() - updated_dt).total_seconds() / 3600
+                        if age_hours > 24:
+                            return None
                 return doc
             return None
         except Exception as e:

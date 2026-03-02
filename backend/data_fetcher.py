@@ -101,25 +101,33 @@ class DataFetcher:
     async def fetch_stock_info_async(self, ticker: str) -> Optional[dict]:
         """
         Fetch stock info with MongoDB caching.
-        Returns from DB if fresh (<24h), otherwise fetches from yfinance.
+        3-tier fallback: fresh cache → yfinance → stale cache.
+        This ensures data is always available even when yfinance rate-limits.
         """
-        # Try MongoDB first
+        # Tier 1: Try fresh MongoDB cache (<24h)
         if self.has_db:
-            cached = await self._db.load_stock_info(ticker)
+            cached = await self._db.load_stock_info(ticker, allow_stale=False)
             if cached:
-                logger.info(f"  {ticker}: Stock info loaded from MongoDB (cached)")
+                logger.info(f"  {ticker}: Stock info loaded from MongoDB (fresh cache)")
                 return cached
 
-        # Fetch from yfinance
+        # Tier 2: Try yfinance
         result = self._fetch_stock_info_yf(ticker)
-        if result is None:
-            return None
+        if result is not None:
+            # Save to MongoDB
+            if self.has_db:
+                await self._db.save_stock_info(ticker, result)
+            return result
 
-        # Save to MongoDB
+        # Tier 3: Fall back to stale MongoDB cache (any age)
         if self.has_db:
-            await self._db.save_stock_info(ticker, result)
+            stale = await self._db.load_stock_info(ticker, allow_stale=True)
+            if stale:
+                logger.warning(f"  {ticker}: Using stale MongoDB cache (yfinance failed)")
+                return stale
 
-        return result
+        logger.error(f"  {ticker}: No stock info available (all sources failed)")
+        return None
 
     def _fetch_stock_info_yf(self, ticker: str) -> Optional[dict]:
         """Fetch fundamental info from yfinance."""
