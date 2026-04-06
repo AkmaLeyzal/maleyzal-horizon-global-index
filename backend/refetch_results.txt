@@ -1,0 +1,75 @@
+MHGI Reset & Refetch Results
+==================================================
+Date: 2026-04-06 07:49:43
+Fetch start: 2019-01-01
+Total tickers in DB: 63
+Total records inserted: 81,864
+Successful: 63
+Failed: 0
+
+Per-ticker detail:
+  AADI.JK      |   309 records | 2024-12-05 -> 2026-04-02  <-- IPO after 2019
+  ADMR.JK      |  1015 records | 2022-01-03 -> 2026-04-02  <-- IPO after 2019
+  ADRO.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  ANTM.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  ARCI.JK      |  1145 records | 2021-06-28 -> 2026-04-02  <-- IPO after 2019
+  ARTO.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BBYB.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BKSL.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BLOG.JK      |   177 records | 2025-07-10 -> 2026-04-02  <-- IPO after 2019
+  BNBR.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BREN.JK      |   588 records | 2023-10-09 -> 2026-04-02  <-- IPO after 2019
+  BRMS.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BRPT.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BSDE.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  BULL.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BUMI.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  BUVA.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  CBDK.JK      |   286 records | 2025-01-13 -> 2026-04-02  <-- IPO after 2019
+  CBRE.JK      |   764 records | 2023-01-09 -> 2026-04-02  <-- IPO after 2019
+  CDIA.JK      |   178 records | 2025-07-09 -> 2026-04-02  <-- IPO after 2019
+  COIN.JK      |   178 records | 2025-07-09 -> 2026-04-02  <-- IPO after 2019
+  CUAN.JK      |   723 records | 2023-03-08 -> 2026-04-02  <-- IPO after 2019
+  DAAZ.JK      |   326 records | 2024-11-11 -> 2026-04-02  <-- IPO after 2019
+  DATA.JK      |   453 records | 2024-05-07 -> 2026-04-02  <-- IPO after 2019
+  DCII.JK      |  1260 records | 2021-01-06 -> 2026-04-02  <-- IPO after 2019
+  DEWA.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  DSNG.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  DSSA.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  EMAS.JK      |   126 records | 2025-09-23 -> 2026-04-02  <-- IPO after 2019
+  EMTK.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  FORE.JK      |   230 records | 2025-04-14 -> 2026-04-02  <-- IPO after 2019
+  GOTO.JK      |   948 records | 2022-04-11 -> 2026-04-02  <-- IPO after 2019
+  HRTA.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  IMPC.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  INDS.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  INET.JK      |   641 records | 2023-07-24 -> 2026-04-02  <-- IPO after 2019
+  ISSP.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  ITMG.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  KBLV.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  MAPI.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  MDKA.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  NCKL.JK      |   701 records | 2023-04-12 -> 2026-04-02  <-- IPO after 2019
+  PANI.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  PGAS.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  PGEO.JK      |   731 records | 2023-02-24 -> 2026-04-02  <-- IPO after 2019
+  PSAB.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  PTRO.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  PYFA.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  RAJA.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  RATU.JK      |   289 records | 2025-01-08 -> 2026-04-02  <-- IPO after 2019
+  RLCO.JK      |    62 records | 2025-12-08 -> 2026-04-02  <-- IPO after 2019
+  SCMA.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  SINI.JK      |  1539 records | 2019-11-08 -> 2026-04-02  <-- IPO after 2019
+  SSIA.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  SSMS.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  SUPA.JK      |    65 records | 2025-12-17 -> 2026-04-02  <-- IPO after 2019
+  TAPG.JK      |  1195 records | 2021-04-12 -> 2026-04-02  <-- IPO after 2019
+  TOBA.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  TOWR.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+  TPIA.JK      |  1762 records | 2019-01-01 -> 2026-04-02
+  TRIN.JK      |  1495 records | 2020-01-15 -> 2026-04-02  <-- IPO after 2019
+  WIFI.JK      |  1263 records | 2020-12-30 -> 2026-04-02  <-- IPO after 2019
+  WIIM.JK      |  1761 records | 2019-01-01 -> 2026-04-02
+
+Total documents: 81,864
