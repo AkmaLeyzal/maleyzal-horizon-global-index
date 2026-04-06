@@ -85,7 +85,10 @@ export default function App() {
   if (initialLoading) {
     return (
       <div className="loading-container">
-        <div className="loader-ring" />
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="loading-logo">M</div>
+          <div className="loader-ring" />
+        </div>
         <div className="loading-text">Loading MHGI Index...</div>
         <div className="loading-sub">Connecting to data feed</div>
       </div>
@@ -94,6 +97,16 @@ export default function App() {
 
   return (
     <>
+      {/* Animated Mesh Background */}
+      <div className="mesh-bg">
+        <div className="mesh-orb mesh-orb--1" />
+        <div className="mesh-orb mesh-orb--2" />
+        <div className="mesh-orb mesh-orb--3" />
+        <div className="mesh-orb mesh-orb--4" />
+      </div>
+      <div className="mesh-grid" />
+      <div className="mesh-noise" />
+
       {/* Header */}
       <header className="header">
         <div className="header-inner">

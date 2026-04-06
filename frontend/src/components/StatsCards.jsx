@@ -18,41 +18,46 @@ export default function StatsCards({ indexData }) {
             label: 'Open',
             value: indexData.open?.toFixed(2) || '—',
             icon: <Activity size={14} />,
+            accent: 'green',
         },
         {
             label: 'Day High',
             value: indexData.high?.toFixed(2) || '—',
             icon: <TrendingUp size={14} />,
-            highlight: true,
+            accent: 'cyan',
         },
         {
             label: 'Day Low',
             value: indexData.low?.toFixed(2) || '—',
             icon: <TrendingDown size={14} />,
+            accent: 'red',
         },
         {
             label: 'Prev Close',
             value: indexData.previous_close?.toFixed(2) || '—',
             icon: <BarChart3 size={14} />,
+            accent: 'blue',
         },
         {
             label: 'Total Market Cap',
             value: `Rp ${formatNum(indexData.total_market_cap)}`,
             icon: <DollarSign size={14} />,
             sub: 'All constituents',
+            accent: 'amber',
         },
         {
             label: 'FF Market Cap',
             value: `Rp ${formatNum(indexData.total_free_float_market_cap)}`,
             icon: <Layers size={14} />,
             sub: 'Free-float adjusted',
+            accent: 'purple',
         },
     ];
 
     return (
         <div className="stats-grid">
             {stats.map((stat, i) => (
-                <div className="stat-card" key={i}>
+                <div className={`stat-card stat-card--${stat.accent}`} key={i}>
                     <div className="stat-label">
                         {stat.icon}
                         {stat.label}
