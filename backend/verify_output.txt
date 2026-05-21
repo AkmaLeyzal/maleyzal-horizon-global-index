@@ -1,4 +1,4 @@
-Collections: ['engine_state', 'Standard_Index', 'system.buckets.Standard_Index', 'stock_info']
+Collections: ['index_history', 'engine_state', 'Standard_Index', 'system.buckets.Standard_Index', 'stock_info']
 
 Ticker summary (63 tickers):
   AADI.JK      |   309 records | 2024-12-05 -> 2026-04-02  <-- IPO after 2019
@@ -69,6 +69,6 @@ Total tickers: 63
 Total documents: 81,864
 Tickers with IPO after 2019: 26
 OK: All data starts from 2019 or later
-  stock_info: 0 docs
-  engine_state: 0 docs
-  index_history: (not found)
+  stock_info: 63 docs
+  engine_state: 1 docs
+  index_history: 1505 docs

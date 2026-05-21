@@ -46,6 +46,7 @@ Methodology (aligned with MSCI / FTSE / S&P Dow Jones):
 
 Persistence: MongoDB Atlas (with JSON fallback).
 """
+
 import json
 import logging
 from datetime import datetime, date, timedelta
@@ -129,7 +130,9 @@ class IndexEngine:
                         self.divisor = last["divisor"]
                     if "ff_mcap_sum" in last:
                         self._last_ff_mcap_sum = last["ff_mcap_sum"]
-                    logger.info(f"  Loaded {len(self.index_history)} history entries from JSON fallback")
+                    logger.info(
+                        f"  Loaded {len(self.index_history)} history entries from JSON fallback"
+                    )
             except Exception as e:
                 logger.warning(f"Failed to load history: {e}")
                 self.index_history = []
@@ -151,14 +154,18 @@ class IndexEngine:
     async def _save_engine_state(self):
         """Persist engine state (divisor, etc.) to MongoDB."""
         if self.has_db:
-            await self._db.save_engine_state({
-                "divisor": self.divisor,
-                "base_value": self.base_value,
-                "base_date": self.base_date,
-                "last_ff_mcap_sum": self._last_ff_mcap_sum,
-                "num_constituents": len(self.tickers),
-                "last_history_date": self.index_history[-1]["date"] if self.index_history else None,
-            })
+            await self._db.save_engine_state(
+                {
+                    "divisor": self.divisor,
+                    "base_value": self.base_value,
+                    "base_date": self.base_date,
+                    "last_ff_mcap_sum": self._last_ff_mcap_sum,
+                    "num_constituents": len(self.tickers),
+                    "last_history_date": self.index_history[-1]["date"]
+                    if self.index_history
+                    else None,
+                }
+            )
 
     async def _load_engine_state(self):
         """Load engine state from MongoDB."""
@@ -169,7 +176,9 @@ class IndexEngine:
                     self.divisor = state["divisor"]
                 if self._last_ff_mcap_sum is None and "last_ff_mcap_sum" in state:
                     self._last_ff_mcap_sum = state["last_ff_mcap_sum"]
-                logger.info(f"  Engine state loaded from MongoDB (divisor: {self.divisor})")
+                logger.info(
+                    f"  Engine state loaded from MongoDB (divisor: {self.divisor})"
+                )
 
     @property
     def tickers(self) -> list[str]:
@@ -188,8 +197,12 @@ class IndexEngine:
         removed = old_tickers - new_tickers
 
         if added or removed:
-            logger.info(f"Constituent change detected. Added: {added}, Removed: {removed}")
-            logger.info("Divisor will be adjusted on next calculation to maintain continuity.")
+            logger.info(
+                f"Constituent change detected. Added: {added}, Removed: {removed}"
+            )
+            logger.info(
+                "Divisor will be adjusted on next calculation to maintain continuity."
+            )
 
     # ─────────── INITIALIZATION ───────────
 
@@ -200,7 +213,9 @@ class IndexEngine:
         logger.info(f"  Methodology: Free-float MCap Weighted (Divisor Method)")
         logger.info(f"  Base Date: {self.base_date} | Base Value: {self.base_value}")
         logger.info(f"  Constituents: {len(self.tickers)} stocks")
-        logger.info(f"  Database: {'MongoDB Atlas ✅' if self.has_db else 'JSON fallback ⚠️'}")
+        logger.info(
+            f"  Database: {'MongoDB Atlas ✅' if self.has_db else 'JSON fallback ⚠️'}"
+        )
         logger.info("═" * 50)
 
         # Load saved state from MongoDB
@@ -243,7 +258,9 @@ class IndexEngine:
                 self.tickers, base_date=self.base_date
             )
         else:
-            historical = data_fetcher.fetch_historical(self.tickers, period="max", interval="1d")
+            historical = data_fetcher.fetch_historical(
+                self.tickers, period="max", interval="1d"
+            )
 
         base_ff_mcap_sum = 0
 
@@ -341,18 +358,20 @@ class IndexEngine:
                 total_ff_mcap += ff_mcap
                 total_mcap += mcap
 
-                constituent_data.append({
-                    "ticker": ticker,
-                    "name": config.get("name", ticker),
-                    "sector": config.get("sector", "Unknown"),
-                    "price": price,
-                    "change_percent": price_data.get("change_percent", 0),
-                    "market_cap": mcap,
-                    "free_float_market_cap": ff_mcap,
-                    "free_float_factor": ff_factor,
-                    "shares_outstanding": shares,
-                    "volume": price_data.get("volume", 0),
-                })
+                constituent_data.append(
+                    {
+                        "ticker": ticker,
+                        "name": config.get("name", ticker),
+                        "sector": config.get("sector", "Unknown"),
+                        "price": price,
+                        "change_percent": price_data.get("change_percent", 0),
+                        "market_cap": mcap,
+                        "free_float_market_cap": ff_mcap,
+                        "free_float_factor": ff_factor,
+                        "shares_outstanding": shares,
+                        "volume": price_data.get("volume", 0),
+                    }
+                )
 
                 logger.info(
                     f"  {ticker:<12} | Close: {price:>10,.0f} | "
@@ -364,12 +383,18 @@ class IndexEngine:
                 return self.last_snapshot
 
             for item in constituent_data:
-                weight = (item["free_float_market_cap"] / total_ff_mcap * 100) if total_ff_mcap > 0 else 0
+                weight = (
+                    (item["free_float_market_cap"] / total_ff_mcap * 100)
+                    if total_ff_mcap > 0
+                    else 0
+                )
                 item["weight"] = round(weight, 4)
                 constituents.append(ConstituentInfo(**item))
 
             if self.divisor is None or self.divisor == 0:
-                self.divisor = total_ff_mcap / self.base_value if total_ff_mcap > 0 else 1.0
+                self.divisor = (
+                    total_ff_mcap / self.base_value if total_ff_mcap > 0 else 1.0
+                )
                 logger.info(f"  Initial divisor set: {self.divisor:,.2f}")
 
             index_value = total_ff_mcap / self.divisor
@@ -378,7 +403,9 @@ class IndexEngine:
             prev_date = self.base_date
             if self.index_history:
                 last_entry = self.index_history[-1]
-                prev_value = last_entry.get("close", last_entry.get("value", self.base_value))
+                prev_value = last_entry.get(
+                    "close", last_entry.get("value", self.base_value)
+                )
                 prev_date = last_entry.get("date", self.base_date)
 
             change = index_value - prev_value
@@ -415,7 +442,8 @@ class IndexEngine:
 
             # Save history entry
             existing_today = [
-                i for i, h in enumerate(self.index_history)
+                i
+                for i, h in enumerate(self.index_history)
                 if h.get("date") == today_str
             ]
             history_entry = {
@@ -501,7 +529,9 @@ class IndexEngine:
                 self.tickers, base_date=self.base_date
             )
         else:
-            historical = data_fetcher.fetch_historical(self.tickers, period="max", interval="1d")
+            historical = data_fetcher.fetch_historical(
+                self.tickers, period="max", interval="1d"
+            )
 
         if not historical:
             return []
@@ -521,10 +551,14 @@ class IndexEngine:
 
         # Determine which dates need calculation
         existing_dates = set(h.get("date") for h in self.index_history)
-        dates_to_calculate = [d for d in all_dates if d.strftime("%Y-%m-%d") not in existing_dates]
+        dates_to_calculate = [
+            d for d in all_dates if d.strftime("%Y-%m-%d") not in existing_dates
+        ]
 
         if not dates_to_calculate and self.index_history:
-            logger.info(f"All {len(existing_dates)} historical dates already calculated")
+            logger.info(
+                f"All {len(existing_dates)} historical dates already calculated"
+            )
             return self.index_history
 
         logger.info(
@@ -545,7 +579,7 @@ class IndexEngine:
 
         new_entries = []
 
-        for dt in (dates_to_calculate if result else all_dates):
+        for dt in dates_to_calculate if result else all_dates:
             total_ff_mcap = 0.0
             total_mcap = 0.0
             valid_count = 0
@@ -637,14 +671,16 @@ class IndexEngine:
                 ts_str = entry.get("timestamp", entry.get("date", ""))
                 ts = datetime.fromisoformat(ts_str) if ts_str else None
                 if ts and ts.timestamp() >= cutoff:
-                    points.append(IndexHistoryPoint(
-                        timestamp=ts,
-                        value=entry.get("close", entry.get("value", 0)),
-                        open=entry.get("open"),
-                        high=entry.get("high"),
-                        low=entry.get("low"),
-                        close=entry.get("close", entry.get("value")),
-                    ))
+                    points.append(
+                        IndexHistoryPoint(
+                            timestamp=ts,
+                            value=entry.get("close", entry.get("value", 0)),
+                            open=entry.get("open"),
+                            high=entry.get("high"),
+                            low=entry.get("low"),
+                            close=entry.get("close", entry.get("value")),
+                        )
+                    )
             except Exception:
                 continue
         return points
@@ -665,7 +701,9 @@ class IndexEngine:
 
         return {
             "name": self.config.get("index_name", "MHGI"),
-            "full_name": self.config.get("index_full_name", "Maleyzal Horizon Global Index"),
+            "full_name": self.config.get(
+                "index_full_name", "Maleyzal Horizon Global Index"
+            ),
             "base_value": self.base_value,
             "base_date": self.base_date,
             "currency": self.config.get("currency", "IDR"),

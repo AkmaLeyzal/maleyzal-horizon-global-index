@@ -21,7 +21,7 @@ logger = logging.getLogger("mhgi.scheduler")
 CALCULATION_HOUR = 17
 CALCULATION_MINUTE = 0
 CHECK_INTERVAL = 60  # seconds
-
+    
 
 class DailyEODScheduler:
     """
